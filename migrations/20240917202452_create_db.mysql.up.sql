@@ -1,0 +1,50 @@
+CREATE TABLE users
+(
+    id         BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name       VARCHAR(255) NOT NULL,
+    created_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at DATETIME NULL
+);
+
+CREATE TABLE bonus_code_rewards
+(
+    id         BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name       VARCHAR(255) NOT NULL,
+    type       VARCHAR(255) NOT NULL,
+    reward     VARCHAR(255) NOT NULL,
+    created_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at DATETIME NULL
+);
+
+CREATE TABLE bonus_codes
+(
+    id                   BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name                 VARCHAR(255) NOT NULL,
+    max_usage            BIGINT UNSIGNED NOT NULL,
+    current_usage        BIGINT UNSIGNED DEFAULT 0,
+    bonus_code_reward_id BIGINT UNSIGNED NOT NULL,
+    status               VARCHAR(50)      NOT NULL,
+    valid_since          DATETIME NULL,
+    valid_till           DATETIME NULL,
+    created_at           DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at           DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at           DATETIME NULL,
+    FOREIGN KEY (bonus_code_reward_id) REFERENCES bonus_code_rewards (id)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE bonus_code_renderings
+(
+    id            BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_id       BIGINT UNSIGNED NOT NULL,
+    bonus_code_id BIGINT UNSIGNED NOT NULL,
+    created_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users (id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (bonus_code_id) REFERENCES bonus_codes (id)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+
